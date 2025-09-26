@@ -1,0 +1,39 @@
+<!-- Fragments de layout -->
+<th:block xmlns:th="http://www.thymeleaf.org"
+          xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+    <!-- Fragmento <head> -->
+    <th:block th:fragment="head(title)">
+        <meta charset="UTF-8"/>
+        <title th:text="${title} ?: 'MotoSecurityX'">MotoSecurityX</title>
+        <link rel="stylesheet" th:href="@{/css/app.css}"/>
+    </th:block>
+
+    <!-- Navbar -->
+    <header th:fragment="navbar">
+        <nav style="padding:8px 0;">
+            <a th:href="@{/}">Home</a> |
+            <a th:href="@{/motos}">Motos</a> |
+            <a th:href="@{/patios}">Pátios</a> |
+
+            <!-- Exibe usuário + role amigável -->
+            <span sec:authorize="isAuthenticated()">
+        Logado como:
+        <strong sec:authentication="name"></strong>
+        <span sec:authorize="hasRole('ADMIN')">(Administrador)</span>
+        <span sec:authorize="hasRole('USER')">(Usuário)</span>
+        |
+        <form th:action="@{/logout}" method="post" style="display:inline">
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+          <button type="submit"
+                  style="background:none;border:none;color:#06c;cursor:pointer;padding:0">
+            Sair
+          </button>
+        </form>
+      </span>
+
+            <!-- Se não autenticado -->
+            <a sec:authorize="!isAuthenticated()" th:href="@{/login}">Entrar</a>
+        </nav>
+    </header>
+</th:block>
