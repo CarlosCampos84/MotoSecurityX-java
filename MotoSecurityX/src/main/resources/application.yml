@@ -7,11 +7,12 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: validate        # Flyway manda no schema
     show-sql: true
     properties:
       hibernate:
         format_sql: true
+    open-in-view: false         # boa prática para evitar Lazy em view
 
   h2:
     console:
@@ -25,6 +26,12 @@ spring:
     enabled: true
     locations: classpath:db/migration
     baseline-on-migrate: true
+    clean-disabled: true        # evita um 'clean' acidental no H2
+
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true           # garante suporte a PUT/DELETE via _method nos forms
 
 server:
   port: 8081

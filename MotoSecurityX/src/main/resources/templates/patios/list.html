@@ -1,11 +1,28 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
+<html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/_header :: head('Pátios')"></head>
 <body>
 <div th:replace="fragments/_header :: navbar"></div>
-<main>
-    <h2>Pátios</h2>
-    <p>Em construção…</p>
-</main>
+
+<div class="container">
+    <h1>Pátios</h1>
+    <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:href="@{/patios/new}">Novo Pátio</a>
+    <table>
+        <thead><tr><th>Nome</th><th>Capacidade</th><th>Ações</th></tr></thead>
+        <tbody>
+        <tr th:each="p : ${patios}">
+            <td th:text="${p.nome}"></td>
+            <td th:text="${p.capacidade}"></td>
+            <td>
+                <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:href="@{|/patios/edit/${p.id}|}">Editar</a>
+                <form th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:action="@{|/patios/${p.id}|}" method="post" style="display:inline">
+                    <input type="hidden" name="_method" value="delete"/>
+                    <button type="submit" onclick="return confirm('Confirmar exclusão?')">Excluir</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 </body>
 </html>

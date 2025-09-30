@@ -1,4 +1,6 @@
 package br.com.motosecurityx.repository;
 
-public class MovimentacaoRepository {
-}
+import br.com.motosecurityx.domain.Movimentacao;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface MovimentacaoRepository extends JpaRepository<Movimentacao, Long> {}

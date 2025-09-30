@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/_header :: head('Moto')"></head>
+<body>
+<div th:replace="fragments/_header :: navbar"></div>
+
+<div class="container">
+    <h1 th:text="${moto.id} != null ? 'Editar Moto' : 'Nova Moto'">Moto</h1>
+
+    <form th:action="@{/motos}" th:object="${moto}" method="post">
+        <input type="hidden" th:if="${moto.id}" th:field="*{id}"/>
+
+        <div class="form-row">
+            <label>Placa</label><br/>
+            <input th:field="*{placa}" placeholder="ABC1D23" maxlength="8"/>
+            <div class="error" th:if="${#fields.hasErrors('placa')}" th:errors="*{placa}"></div>
+        </div>
+
+        <div class="form-row">
+            <label>Modelo</label><br/>
+            <input th:field="*{modelo}" maxlength="80"/>
+            <div class="error" th:if="${#fields.hasErrors('modelo')}" th:errors="*{modelo}"></div>
+        </div>
+
+        <div class="form-row">
+            <label>Pátio</label><br/>
+            <select th:field="*{patioAtual}">
+                <option th:each="p: ${patios}" th:value="${p.id}" th:text="${p.nome}"></option>
+            </select>
+            <div class="error" th:if="${#fields.hasErrors('patioAtual')}" th:errors="*{patioAtual}"></div>
+        </div>
+
+        <div class="form-row">
+            <label>
+                <input type="checkbox" th:field="*{disponivel}"/> Disponível
+            </label>
+            <div class="error" th:if="${#fields.hasErrors('disponivel')}" th:errors="*{disponivel}"></div>
+        </div>
+
+        <div class="form-row">
+            <button type="submit">Salvar</button>
+            <a th:href="@{/motos}">Cancelar</a>
+        </div>
+    </form>
+</div>
+</body>
+</html>

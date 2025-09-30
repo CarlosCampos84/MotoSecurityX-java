@@ -2,7 +2,8 @@ package br.com.motosecurityx.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
@@ -11,6 +12,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import javax.sql.DataSource;
 
 @Configuration
+@EnableMethodSecurity
 public class SecurityConfig {
 
     // Autenticação via JDBC usando as tabelas criadas pelo Flyway
@@ -29,15 +31,39 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
         http
                 .authorizeHttpRequests(auth -> auth
+                        // Públicos
                         .requestMatchers(
                                 "/css/**", "/js/**", "/images/**", "/webjars/**",
-                                "/favicon.ico", "/error",
-                                "/h2-console/**",
+                                "/favicon.ico", "/error", "/h2-console/**",
                                 "/login"
                         ).permitAll()
+
+                        // UI (Thymeleaf) - leitura para ADMIN/OPERADOR
+                        .requestMatchers(HttpMethod.GET, "/motos/**", "/patios/**", "/fluxos/**")
+                        .hasAnyRole("ADMIN","OPERADOR")
+                        // UI - escrita só ADMIN
+                        .requestMatchers(HttpMethod.POST, "/motos/**", "/patios/**", "/fluxos/**")
+                        .hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/motos/**", "/patios/**", "/fluxos/**")
+                        .hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/motos/**", "/patios/**", "/fluxos/**")
+                        .hasRole("ADMIN")
+
+                        // API REST - leitura para ADMIN/OPERADOR
+                        .requestMatchers(HttpMethod.GET, "/api/**")
+                        .hasAnyRole("ADMIN","OPERADOR")
+                        // API REST - escrita só ADMIN
+                        .requestMatchers(HttpMethod.POST, "/api/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMIN")
+
+                        // Outras áreas administrativas (se houver)
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+
+                        // Demais rotas: autenticado
                         .anyRequest().authenticated()
                 )
                 .formLogin(login -> login
@@ -45,7 +71,7 @@ public class SecurityConfig {
                         .defaultSuccessUrl("/", true)
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/logout")                    // POST /logout (com CSRF)
+                        .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout")
                         .permitAll()
                 )
@@ -53,8 +79,9 @@ public class SecurityConfig {
                         .accessDeniedPage("/login?denied")
                 )
                 // H2 Console
-                .headers(headers -> headers.frameOptions(frame -> frame.disable()))
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"));
+                .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
+                // CSRF: ignorar H2 e API (facilita testes de endpoints REST)
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**", "/api/**"));
 
         return http.build();
     }

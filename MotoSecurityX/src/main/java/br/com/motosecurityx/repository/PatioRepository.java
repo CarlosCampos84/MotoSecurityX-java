@@ -1,4 +1,6 @@
 package br.com.motosecurityx.repository;
 
-public class PatioRepository {
-}
+import br.com.motosecurityx.domain.Patio;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface PatioRepository extends JpaRepository<Patio, Long> {}

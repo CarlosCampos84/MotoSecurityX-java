@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/_header :: head('Erro')"></head>
+<body>
+<div th:replace="fragments/_header :: navbar"></div>
+<div class="container">
+    <h1>Ops! Algo deu errado.</h1>
+    <p>Tente novamente ou volte para a <a th:href="@{/}">Home</a>.</p>
+    <p th:if="${timestamp}">Data/Hora: <span th:text="${timestamp}"></span></p>
+    <p th:if="${message}">Detalhes: <span th:text="${message}"></span></p>
+</div>
+</body>
+</html>
