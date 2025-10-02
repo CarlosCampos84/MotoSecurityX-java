@@ -1,6 +1,7 @@
+-- usuários iniciais (com {noop} para ambiente de dev)
 INSERT INTO usuario (username, password, enabled) VALUES
-                                                      ('admin',    '{noop}admin123',    TRUE),
-                                                      ('operador', '{noop}oper123',     TRUE);
+                                                      ('admin',    '{noop}admin123', TRUE),
+                                                      ('operador', '{noop}oper123',  TRUE);
 
 -- relaciona usuários às roles
 INSERT INTO usuario_role (usuario_id, role_id)
