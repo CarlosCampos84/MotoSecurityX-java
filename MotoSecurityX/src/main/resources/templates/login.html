@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
-<head th:replace="fragments/_header :: head('Login')"></head>
+<head th:replace="~{fragments/_header :: head('Login')}"></head>
 <body>
 <main style="max-width:420px;margin:48px auto;font-family:system-ui, sans-serif;">
     <h2 style="margin-bottom:16px;">Login</h2>
@@ -27,5 +27,7 @@
         <div th:if="${param.denied}" style="color:#b00020;">Acesso negado.</div>
     </form>
 </main>
+
+<div th:replace="~{fragments/_footer :: footer}"></div>
 </body>
 </html>

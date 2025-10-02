@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="footer">
+    <hr/>
+    <footer style="font-size:.9rem; color:#666; text-align:center; padding:0.5rem 0;">
+        MotoSecurityX · 2TDS 2025 ·
+        <span th:text="${#dates.format(#dates.createNow(),'dd/MM/yyyy HH:mm')}">data</span>
+    </footer>
+</div>
+</body>
+</html>

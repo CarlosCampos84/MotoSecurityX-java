@@ -9,5 +9,7 @@
     <p th:if="${timestamp}">Data/Hora: <span th:text="${timestamp}"></span></p>
     <p th:if="${message}">Detalhes: <span th:text="${message}"></span></p>
 </div>
+
+<div th:replace="fragments/_footer :: footer"></div>
 </body>
 </html>

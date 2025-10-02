@@ -8,7 +8,7 @@
     <h1>Motos</h1>
 
     <!-- alerts -->
-    <div th:if="${param.ok}"     style="color: green;">Moto salva com sucesso.</div>
+    <div th:if="${param.ok}"      style="color: green;">Moto salva com sucesso.</div>
     <div th:if="${param.deleted}" style="color: green;">Moto excluída com sucesso.</div>
     <div th:if="${param.movida}"  style="color: green;">Moto movida com sucesso.</div>
     <div th:if="${param.err}"     style="color: firebrick;">[[${param.err}]]</div>
@@ -32,10 +32,7 @@
         <tr th:each="m : ${motos}">
             <td th:text="${m.placa}">ABC1D23</td>
             <td th:text="${m.modelo}">Modelo</td>
-
-            <!-- NULL-SAFE: se por qualquer motivo patioAtual vier nulo, não quebra -->
             <td th:text="${m.patioAtual != null ? m.patioAtual.nome : '—'}">Pátio</td>
-
             <td th:text="${m.disponivel} ? 'Sim' : 'Não'">Sim</td>
             <td>
                 <a th:href="@{|/fluxos/mover/${m.id}|}">Mover</a>
@@ -54,5 +51,7 @@
         </tbody>
     </table>
 </div>
+
+<div th:replace="fragments/_footer :: footer"></div>
 </body>
 </html>
