@@ -1,10 +1,8 @@
 ## 🚀 MotoSecurityX — Challenge_java (2TDS 2025)
 
-Spring Boot 3 + Thymeleaf + JPA/Hibernate + Flyway
+Spring Boot 3 + Thymeleaf + JPA/Hibernate + Flyway + Spring Security
 
-Aplicação web para controle e monitoramento de motos e pátios, com autenticação e autorização baseadas em perfis de usuário.
-
-O projeto aplica Camadas de Serviço + Repositórios (DDD básico), validações com Bean Validation, migrações com Flyway e boas práticas de Clean Code.
+Aplicação web para controle e monitoramento de motos e pátios, com autenticação baseada em usuários/roles, validações de regras de negócio e histórico de movimentações.
 
 ## 👥 Integrantes do Grupo
 
@@ -16,66 +14,54 @@ Antônio Lino – RM: 554518
 
 O domínio simula operações da Mottu:
 
-  Usuários: administradores e operadores autenticados via Spring Security
+  Usuários: administradores e operadores (seedados via Flyway)
 
   Pátios: locais físicos que armazenam motos, com capacidade definida
 
-  Motos: possuem Placa (única), Modelo, disponibilidade e vínculo com um pátio
+  Motos: possuem Placa única, Modelo, status de disponibilidade e vínculo com pátio
 
-  Movimentações: registram transferências de motos entre pátios (fluxo de negócio)
+  Movimentações: registram transferências de motos entre pátios
 
   **Regras:** 
 
     - Placa única (constraint UNIQUE no banco)
 
-    - Usuários e papéis definidos via Flyway (ADMIN / OPERADOR)
+    - Usuários e papéis definidos via Flyway (ROLE_ADMIN / ROLE_OPERADOR)
 
     - Moto só pode ser movida para pátio com capacidade disponível
 
     - Operador: acesso apenas leitura
 
-    Admin: CRUD completo + movimentação
+    - Admin: CRUD completo + movimentação
   
   **Benefício de negócio:** 
-    Gestão de ativos e visibilidade de onde cada moto está estacionada, além de segurança de acesso
+    Gestão de ativos e visibilidade de onde cada moto está estacionada, com maior segurança de acesso.
 
 ## 🧭 Arquitetura (Camadas)
 
 **📂 src/main/java/br/com/motosecurityx/**
 
-  config/ → Configuração de segurança (Spring Security).
+  config/ → Configuração de segurança (SecurityConfig), reset e normalização de senhas (DevPasswordReset, DevPasswordNormalizer)
 
-  domain/ → Entidades do domínio (Moto, Patio, Movimentacao).
+  domain/ → Entidades de domínio (Moto, Patio, Movimentacao, Funcionario, Alocacao)
 
-  repository/ → Interfaces JPA (MotoRepository, PatioRepository, MovimentacaoRepository).
+  repository/ → Interfaces JPA (MotoRepository, PatioRepository, MovimentacaoRepository, etc.)
 
-  service/ → Regras de negócio (MotoService, PatioService).
+  service/ → Regras de negócio (MotoServiceImpl, PatioServiceImpl, etc.)
 
-  web/ → Controladores Spring MVC (Controllers REST + Views Thymeleaf).
+  web/ → Controladores MVC (MotoController, PatioController, AlocacaoController, PageController)
 
 **📂 src/main/resources/**
 
-  db/migration/ → Scripts Flyway (criação de tabelas + seed de usuários/roles).
+  db/migration/ → Scripts Flyway (V1__create_tables.sql até V11__normalize_passwords.sql)
 
-  templates/ → Views Thymeleaf (motos, patios, login, erro).
+  templates/ → iews Thymeleaf (login.html, home.html, motos/, patios/, alocacoes/, fragments/)
 
-  static/ → CSS/JS/Imagens.
-
-**Princípios aplicados:**
-
-- Separação de responsabilidades: Controller → Service → Repository
-
-- Inversão de Dependência: regras de negócio dependem de interfaces
-
-- Regras de negócio concentradas no Service
-
-- Validações via Bean Validation nas Entidades
-
-- Views server-side com Thymeleaf (sem expor lógica ao cliente)
+  static/ → CSS (css/app.css)
 
 ## 🧩 Modelagem de Domínio (DDD)
 
-- Entidades:
+- Entidades principais:
 
     Moto: placa, modelo, disponível, pátio atual
 
@@ -83,37 +69,37 @@ O domínio simula operações da Mottu:
 
     Movimentacao: moto, pátio origem, pátio destino, data/hora
 
-- Regras de Negócio (Services):
+    Usuario → username, senha (bcrypt), role (ADMIN ou OPERADOR)
 
-    MotoService.moverMoto(motoId, patioId)
+    Funcionario / Alocacao → suporte a controle de funcionários vinculados a pátios
 
-      valida capacidade do pátio destino,
+- Regras implementadas:
 
-      atualiza pátio da moto,
+    MotoService.moverMoto() → valida capacidade do pátio destino, atualiza vínculo e gera movimentação
 
-      cria registro de movimentação
+    Usuários ADMIN têm permissões CRUD, OPERADOR apenas leitura
 
 ✅ Status atual: 
 
-  CRUD completo de Motos e Pátios (com validações e mensagens de erro)
+  Login/Logout com Spring Security (usuário seedado no banco)
 
-  Autenticação via JDBC (usuários seed no banco, ADMIN / OPERADOR)
+  Perfis de acesso: ADMIN e OPERADOR
 
-  Controle de acesso diferenciado (Spring Security)
+  CRUD completo de Motos e Pátios com validações
 
-  Template Login com feedback (logout, acesso negado)
+  Controle de movimentação de motos entre pátios
 
-  Template de Erro (error.html + 404.html) customizado
+  Views Thymeleaf organizadas com fragments (_header.html, _footer.html)
 
-  Fluxo de Movimentação de Motos implementado com histórico
+  Templates de erro customizados (404.html, error.html)
 
-🧱 Backlog de evolução futura: incluir entidade extra (ex.: Ocorrencia ou Manutencao) para enriquecer o domínio.
+  Flyway controlando todas as migrations até V11__normalize_passwords.sql
 
 ## 🔧 Requisitos
 
 - Java 17
 
-- Maven 3.9+ (wrapper já incluído no projeto: ./mvnw)
+- Maven 3.9+ (wrapper incluído ./mvnw)
 
 - Spring Boot 3.5.x
 
@@ -133,18 +119,23 @@ O domínio simula operações da Mottu:
     
     ./mvnw spring-boot:run
 
-  # Aplicação disponível em:
-    👉 http://localhost:8081
+  # Acesso:
 
-  # Console H2:
-    👉 http://localhost:8081/h2-console
+    Aplicação: 👉 http://localhost:8081
 
-    (JDBC URL: jdbc:h2:mem:motosecurityx, user: sa, sem senha)
+    Console H2: 👉 http://localhost:8081/h2-console
 
-  **Usuários seedados (via Flyway):**
-  - admin / 123 → ADMIN
+      JDBC URL: jdbc:h2:mem:motosecurityx
 
-  - operador / 123 → OPERADOR
+      User: sa
+
+      Sem senha
+
+  # Usuários disponíveis (seedados via Flyway):
+
+    admin / admin123 → ROLE_ADMIN
+
+    operador / oper123 → ROLE_OPERADOR
 
 ## 🌐 Funcionalidades (exemplos)
   
@@ -152,7 +143,9 @@ O domínio simula operações da Mottu:
 
   Página: /login
 
-  Redireciona para /home após sucesso.
+  Redireciona para /home após autenticação
+
+  Feedback de erro (Credenciais inválidas)
 
   Logout via POST /logout.
 
@@ -160,29 +153,27 @@ O domínio simula operações da Mottu:
 
   Listar: /patios
 
-  Criar: /patios/new (apenas ADMIN)
+  Criar/Editar/Excluir: ADMIN
 
-  Editar: /patios/edit/{id} (ADMIN)
-
-  Excluir: botão em /patios (ADMIN)
+  Visualização: OPERADOR
 
 ### Motos
   
   Listar: /motos
 
-  Criar: /motos/new (ADMIN)
-
-  Editar: /motos/edit/{id} (ADMIN)
-
-  Excluir: botão em /motos (ADMIN)
+  Criar/Editar/Excluir: ADMIN
 
   Mover entre pátios: /fluxos/mover/{id} (ADMIN)
 
-## 🗃️ Persistência & Migrations
+### 🔄 Movimentações
 
-- Banco H2 em memória (desenvolvimento).
+  Histórico de transferências de motos
 
-- Migrations Flyway em /resources/db/migration:
+  Vincula pátio origem, destino e data/hora
+
+## 🗃️ Migrations Flyway
+
+  Scripts em /resources/db/migration:
 
     V1__create_tables.sql
 
@@ -192,29 +183,50 @@ O domínio simula operações da Mottu:
 
     V4__security_seed_users.sql
 
+    V5__alter_moto_add_disponivel.sql
+
+    V6__create_table_movimentacao.sql
+
+    V7__alter_patio_add_capacidade.sql
+
+    V8__bcrypt_usuarios.sql
+
+    V9__create_funcionario_and_alocacao.sql
+
+    V10__fix_password_prefix.sql
+
+    V11__normalize_passwords.sql
+
 ## 🧼 Clean Code
 
-- SRP/DRY aplicados em Services e Controllers
+- Controllers finos, apenas coordenam request/response
 
-- Controllers finos → só coordenam requisição/resposta.
+- Services concentram regras de negócio
 
-- Nomes claros, métodos curtos, responsabilidades bem separadas.
+- Reutilização via interfaces de repositório JPA
 
-- Validações centralizadas com Bean Validation.
+- Validações centralizadas com Bean Validation
+
+- Fragments Thymeleaf para reaproveitar layout
 
 ## 📋 Testes
 
-- Testes manuais: via navegação em Views (Thymeleaf)
+- Testes manuais: via navegação (Thymeleaf)
 
-- Testes de autenticação com diferentes perfis (ADMIN vs OPERADOR)
+- Autenticação testada com ADMIN e OPERADOR
 
-- Testes de regra de negócio:
+- Regras de negócio validadas:
 
-    Moto não pode ser movida se pátio cheio
+    Não mover moto se pátio cheio
 
-    Moto exige placa válida (padrão Mercosul)
+    Moto exige placa válida
 
 (Futuramente: adicionar testes unitários com JUnit + MockMvc)
+
+# 🎬 Vídeo 
+
+Link:  
+"https://youtu.be/l2A_7gutvWo?si=zm9AVyZDQIb9V8Kj"
 
 ## 📄 Licença
 
