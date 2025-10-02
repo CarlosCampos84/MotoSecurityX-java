@@ -226,7 +226,7 @@ O domínio simula operações da Mottu:
 # 🎬 Vídeo 
 
 Link:  
-"https://youtu.be/l2A_7gutvWo?si=zm9AVyZDQIb9V8Kj"
+"https://youtu.be/zCuMNBzGEHs"
 
 ## 📄 Licença
 
