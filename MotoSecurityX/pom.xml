@@ -70,34 +70,6 @@
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
-        <!-- Flyway -->
-<properties>
-    <flyway.version>9.16.3</flyway.version> <!-- Versão testada com SQL Server -->
-</properties>
-
-<dependencies>
-    <!-- Flyway Core -->
-    <dependency>
-        <groupId>org.flywaydb</groupId>
-        <artifactId>flyway-core</artifactId>
-        <version>${flyway.version}</version>
-    </dependency>
-    
-    <!-- Flyway SQL Server - ESSENCIAL -->
-    <dependency>
-        <groupId>org.flywaydb</groupId>
-        <artifactId>flyway-sqlserver</artifactId>
-        <version>${flyway.version}</version>
-    </dependency>
-    
-    <!-- SQL Server JDBC -->
-    <dependency>
-        <groupId>com.microsoft.sqlserver</groupId>
-        <artifactId>mssql-jdbc</artifactId>
-        <version>12.8.1.jre11</version>
-    </dependency>
-</dependencies>
-
         <!-- DB (dev) -->
         <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
