@@ -69,7 +69,7 @@ O domínio simula operações da Mottu:
 
     Movimentção: moto, pátio origem, pátio destino, data/hora
 
-    Usuario → username, senha (bcrypt), role (ADMIN ou OPERADOR)
+    Usuário → username, senha (bcrypt), role (ADMIN ou OPERADOR)
 
     Funcionario / Alocacao → suporte a controle de funcionários vinculados a pátios
 
