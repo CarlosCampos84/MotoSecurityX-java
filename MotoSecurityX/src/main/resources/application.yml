@@ -1,0 +1,45 @@
+spring:
+  profiles:
+    active: dev
+
+  datasource:
+    url: jdbc:sqlserver://motoxserver.database.windows.net:1433;database=motoxdb;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30
+    username: admin_fiap@motoxserver  # ✅ ADICIONE @servidor no username
+    password: Macacoprego@
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate  # ✅ Mude para validate com Flyway
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.SQLServerDialect
+        format_sql: true
+    open-in-view: false
+
+  # ✅ CONFIGURAÇÃO CORRIGIDA DO FLYWAY
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    validate-on-migrate: true
+    # Configurações específicas para SQL Server
+    sql-server-kerberos-config-file: ""  # Force SQL Server mode
+
+  thymeleaf:
+    cache: false
+
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.flywaydb: DEBUG  # ✅ Adicione para ver logs do Flyway
+    org.springframework.jdbc.core: DEBUG
+
+server:
+  port: 8081

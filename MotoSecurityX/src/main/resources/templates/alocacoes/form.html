@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/_header :: head('Alocar Moto')"></head>
+<body>
+<div th:replace="fragments/_header :: navbar"></div>
+
+<div class="container">
+    <h1>Alocar moto</h1>
+    <p>
+        <b>Funcionário:</b> <span th:text="${funcionario.nome}"></span>
+        (<span th:text="${funcionario.email}"></span>)
+    </p>
+
+    <form th:action="@{/alocacoes}" method="post">
+        <input type="hidden" name="funcionarioId" th:value="${funcionario.id}"/>
+
+        <div class="form-row">
+            <label>Moto</label><br/>
+            <select name="motoId" required>
+                <option th:each="m : ${motosDisponiveis}" th:value="${m.id}"
+                        th:text="${m.placa + ' - ' + m.modelo + ' (' + (m.patioAtual != null ? m.patioAtual.nome : '—') + ')'}">
+                </option>
+            </select>
+        </div>
+
+        <div class="form-row">
+            <button type="submit">Alocar</button>
+            <a th:href="@{/funcionarios}">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+<div th:replace="fragments/_footer :: footer"></div>
+</body>
+</html>

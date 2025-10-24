@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8"/>
+    <title th:text="${title}">MotoSecurityX</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+
+<body th:fragment="navbar">
+<div class="navbar">
+    <a th:href="@{/}">Home</a> |
+    <a th:href="@{/motos}">Motos</a> |
+    <a th:href="@{/patios}">Pátios</a>
+    <span style="margin-left:12px;">
+      | Logado como:
+      <b th:text="${#authentication?.name}">user</b>
+      <span th:if="${#authorization.expression('hasRole(''ADMIN'')')}"> (Administrador)</span>
+      |
+      <form th:action="@{/logout}" method="post" style="display:inline;">
+        <button type="submit">Sair</button>
+      </form>
+    </span>
+</div>
+</body>
+</html>

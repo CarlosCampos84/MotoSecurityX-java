@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/_header :: head('Funcionários')"></head>
+<body>
+<div th:replace="fragments/_header :: navbar"></div>
+
+<div class="container">
+    <h1>Funcionários</h1>
+
+    <div class="flash ok" th:if="${param.ok}">Funcionário salvo.</div>
+    <div class="flash ok" th:if="${param.deleted}">Funcionário excluído.</div>
+    <div class="flash ok" th:if="${param.alocado}">Alocação realizada.</div>
+    <div class="flash ok" th:if="${param.devolvido}">Alocação encerrada.</div>
+
+    <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:href="@{/funcionarios/new}">Novo Funcionário</a>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Ativo</th>
+            <th>Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${#lists.isEmpty(funcionarios)}">
+            <td colspan="4">Nenhum funcionário cadastrado.</td>
+        </tr>
+        <tr th:each="f : ${funcionarios}">
+            <td th:text="${f.nome}">Nome</td>
+            <td th:text="${f.email}">email</td>
+            <td th:text="${f.ativo} ? 'Sim' : 'Não'">Sim</td>
+            <td>
+                <a th:href="@{|/alocacoes/novo/${f.id}|}" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">Alocar moto</a>
+                <a th:href="@{|/funcionarios/edit/${f.id}|}" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">Editar</a>
+                <form th:action="@{|/funcionarios/${f.id}|}" method="post" style="display:inline" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+                    <input type="hidden" name="_method" value="delete"/>
+                    <button type="submit" onclick="return confirm('Confirmar exclusão?')">Excluir</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div th:replace="fragments/_footer :: footer"></div>
+</body>
+</html>

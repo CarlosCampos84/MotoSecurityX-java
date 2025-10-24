@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/_header :: head('Mover Moto')"></head>
+<body>
+<div th:replace="fragments/_header :: navbar"></div>
+
+<div class="container">
+    <h1>Mover Moto</h1>
+
+    <p>
+        <b>Placa:</b> <span th:text="${moto.placa}"></span> |
+        <b>Modelo:</b> <span th:text="${moto.modelo}"></span> |
+        <b>Pátio atual:</b> <span th:text="${moto.patioAtual != null ? moto.patioAtual.nome : '—'}"></span>
+    </p>
+
+    <form th:action="@{/fluxos/mover}" method="post">
+        <input type="hidden" name="motoId" th:value="${moto.id}"/>
+
+        <div class="form-row">
+            <label>Novo pátio</label><br/>
+            <select name="patioId" required>
+                <option th:each="p : ${patios}" th:value="${p.id}" th:text="${p.nome}"></option>
+            </select>
+        </div>
+
+        <div class="form-row">
+            <button type="submit">Mover</button>
+            <a th:href="@{/motos}">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+<div th:replace="fragments/_footer :: footer"></div>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/_header :: head('Motos')"></head>
+<body>
+<div th:replace="fragments/_header :: navbar"></div>
+
+<div class="container">
+    <h1>Motos</h1>
+
+    <!-- alerts -->
+    <div th:if="${param.ok}"      style="color: green;">Moto salva com sucesso.</div>
+    <div th:if="${param.deleted}" style="color: green;">Moto excluída com sucesso.</div>
+    <div th:if="${param.movida}"  style="color: green;">Moto movida com sucesso.</div>
+    <div th:if="${param.err}"     style="color: firebrick;">[[${param.err}]]</div>
+
+    <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:href="@{/motos/new}">Nova Moto</a>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Placa</th>
+            <th>Modelo</th>
+            <th>Pátio</th>
+            <th>Disponível</th>
+            <th>Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${#lists.isEmpty(motos)}">
+            <td colspan="5">Nenhuma moto cadastrada.</td>
+        </tr>
+        <tr th:each="m : ${motos}">
+            <td th:text="${m.placa}">ABC1D23</td>
+            <td th:text="${m.modelo}">Modelo</td>
+            <td th:text="${m.patioAtual != null ? m.patioAtual.nome : '—'}">Pátio</td>
+            <td th:text="${m.disponivel} ? 'Sim' : 'Não'">Sim</td>
+            <td>
+                <a th:href="@{|/fluxos/mover/${m.id}|}">Mover</a>
+
+                <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}"
+                   th:href="@{|/motos/edit/${m.id}|}">Editar</a>
+
+                <form th:if="${#authorization.expression('hasRole(''ADMIN'')')}"
+                      th:action="@{|/motos/${m.id}|}"
+                      method="post" style="display:inline">
+                    <input type="hidden" name="_method" value="delete"/>
+                    <button type="submit" onclick="return confirm('Confirmar exclusão?')">Excluir</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div th:replace="fragments/_footer :: footer"></div>
+</body>
+</html>

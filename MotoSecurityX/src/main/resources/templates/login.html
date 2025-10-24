@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
+<head th:replace="~{fragments/_header :: head('Login')}"></head>
+<body>
+<main style="max-width:420px;margin:48px auto;font-family:system-ui, sans-serif;">
+    <h2 style="margin-bottom:16px;">Login</h2>
+
+    <form th:action="@{/login}" method="post" style="display:grid;gap:12px;">
+        <label style="display:grid;gap:6px;">
+            Usuário
+            <input type="text" name="username" autocomplete="username" required />
+        </label>
+
+        <label style="display:grid;gap:6px;">
+            Senha
+            <input type="password" name="password" autocomplete="current-password" required />
+        </label>
+
+        <!-- CSRF é obrigatório no POST /login -->
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+        <button type="submit" style="padding:10px 14px; cursor:pointer;">Entrar</button>
+
+        <!-- mensagens -->
+        <div th:if="${param.error}"  style="color:#b00020;">Credenciais inválidas.</div>
+        <div th:if="${param.logout}" style="color:#056608;">Logout realizado.</div>
+        <div th:if="${param.denied}" style="color:#b00020;">Acesso negado.</div>
+    </form>
+</main>
+
+<div th:replace="~{fragments/_footer :: footer}"></div>
+</body>
+</html>

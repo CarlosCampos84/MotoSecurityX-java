@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/_header :: head('Funcionário')"></head>
+<body>
+<div th:replace="fragments/_header :: navbar"></div>
+
+<div class="container">
+    <h1 th:text="${funcionario.id} != null ? 'Editar Funcionário' : 'Novo Funcionário'">Funcionário</h1>
+
+    <form th:action="@{/funcionarios}" th:object="${funcionario}" method="post">
+        <input type="hidden" th:if="${funcionario.id}" th:field="*{id}"/>
+
+        <div class="form-row">
+            <label>Nome</label><br/>
+            <input th:field="*{nome}" maxlength="100"/>
+            <div class="error" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></div>
+        </div>
+
+        <div class="form-row">
+            <label>Email</label><br/>
+            <input th:field="*{email}" maxlength="120"/>
+            <div class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+        </div>
+
+        <div class="form-row">
+            <label><input type="checkbox" th:field="*{ativo}"/> Ativo</label>
+        </div>
+
+        <div class="form-row">
+            <button type="submit">Salvar</button>
+            <a th:href="@{/funcionarios}">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+<div th:replace="fragments/_footer :: footer"></div>
+</body>
+</html>
